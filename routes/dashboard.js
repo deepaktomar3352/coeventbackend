@@ -518,13 +518,11 @@ router.get("/technoparvday01fetch", function (req, res) {
       console.log(error);
       res.status(500).json({ status: false, message: "Server error...." });
     } else {
-      res
-        .status(200)
-        .json({
-          status: true,
-          data: result,
-          message: "Fetchtechnoparv day01 Succesfully",
-        });
+      res.status(200).json({
+        status: true,
+        data: result,
+        message: "Fetchtechnoparv day01 Succesfully",
+      });
     }
   });
 });
@@ -534,13 +532,11 @@ router.get("/technoparvday02fetch", function (req, res) {
       console.log(error);
       res.status(500).json({ status: false, message: "Server error...." });
     } else {
-      res
-        .status(200)
-        .json({
-          status: true,
-          data: result,
-          message: "Fetch technoparv day02 Succesfully",
-        });
+      res.status(200).json({
+        status: true,
+        data: result,
+        message: "Fetch technoparv day02 Succesfully",
+      });
     }
   });
 });
@@ -550,13 +546,11 @@ router.get("/technoparvday03fetch", function (req, res) {
       console.log(error);
       res.status(500).json({ status: false, message: "Server error...." });
     } else {
-      res
-        .status(200)
-        .json({
-          status: true,
-          data: result,
-          message: "Fetch technoparv day03 Succesfully",
-        });
+      res.status(200).json({
+        status: true,
+        data: result,
+        message: "Fetch technoparv day03 Succesfully",
+      });
     }
   });
 });
@@ -566,13 +560,11 @@ router.get("/technoparvday04fetch", function (req, res) {
       console.log(error);
       res.status(500).json({ status: false, message: "Server error...." });
     } else {
-      res
-        .status(200)
-        .json({
-          status: true,
-          data: result,
-          message: "Fetch  technoparv  day04 Succesfully",
-        });
+      res.status(200).json({
+        status: true,
+        data: result,
+        message: "Fetch  technoparv  day04 Succesfully",
+      });
     }
   });
 });
@@ -585,13 +577,11 @@ router.get("/vilayday01fetch", function (req, res) {
       res.status(500).json({ status: false, message: "Server error...." });
     } else {
       console.log(result);
-      res
-        .status(200)
-        .json({
-          status: true,
-          data: result,
-          message: "Fetch vilay day01 Succesfully",
-        });
+      res.status(200).json({
+        status: true,
+        data: result,
+        message: "Fetch vilay day01 Succesfully",
+      });
     }
   });
 });
@@ -602,13 +592,11 @@ router.get("/vilayday02fetch", function (req, res) {
       res.status(500).json({ status: false, message: "Server error...." });
     } else {
       console.log(result);
-      res
-        .status(200)
-        .json({
-          status: true,
-          data: result,
-          message: "Fetch vilay day02 Succesfully",
-        });
+      res.status(200).json({
+        status: true,
+        data: result,
+        message: "Fetch vilay day02 Succesfully",
+      });
     }
   });
 });
@@ -619,13 +607,11 @@ router.get("/vilayday03fetch", function (req, res) {
       res.status(500).json({ status: false, message: "Server error...." });
     } else {
       console.log(result);
-      res
-        .status(200)
-        .json({
-          status: true,
-          data: result,
-          message: "Fetch vilay day03 Succesfully",
-        });
+      res.status(200).json({
+        status: true,
+        data: result,
+        message: "Fetch vilay day03 Succesfully",
+      });
     }
   });
 });
@@ -636,16 +622,85 @@ router.get("/vilayday04fetch", function (req, res) {
       res.status(500).json({ status: false, message: "Server error...." });
     } else {
       console.log(result);
-      res
-        .status(200)
-        .json({
-          status: true,
-          data: result,
-          message: "Fetch vilay day 04 Succesfully",
-        });
+      res.status(200).json({
+        status: true,
+        data: result,
+        message: "Fetch vilay day 04 Succesfully",
+      });
     }
   });
 });
 // ************************************************************************************************************************
+
+//  ###################USED FOR SLIDERS IMAGES SUBMIT####################
+router.post("/slider_submit", upload.any(), (req, res) => {
+  const files = req.files;
+  const table = req.body.table;
+  console.log("table :", table);
+  if (!files || !table) {
+    res.status(200).json({ message: "server error" });
+  }
+  pool.query(
+    `INSERT INTO ${table} (slidepicl, submitedat, updatedat, submitedby) VALUES (?,?,?,?)`,
+    [
+      files.map((file) => [file.originalname]),
+      req.body.submitedat,
+      req.body.updatedat,
+      req.body.submitedby,
+    ],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(200).json({ status: false, message: "server error" });
+      }
+      console.log(result); 
+      res 
+        .status(200)
+        .json({
+          status: true,
+          data: result,
+          message: "Record submitted successfully",
+        });
+    }
+  );
+});
+
+//  calling event gallery function
+router.get('/gallery', function (req, res) {
+  pool.query("select * from eventsgallerypic", function (error, result) {
+      if (error) {
+          console.log(error)
+          res.status(200).json({ data: '', 'message': 'server error' })
+      }
+      else {
+
+          res.status(200).json({ status: true, data: result, 'message': 'fetched success' })
+
+          // res.send(result)
+      }
+
+  });
+});
+
+
+
+router.post('/uploadimg', upload.any(), (req, res) => {
+  const files = req.files;
+  const table = req.body.table;
+  console.log('table :', table)
+  if (!files || !table) {
+      res.status(200).json({ 'message': 'server error' })
+  }
+  pool.query(`INSERT INTO ${table} (picname, picsize, picmime) VALUES ?`, [files.map(file => [file.originalname, file.size, file.mimetype])], (error, result) => {
+      if (error) {
+          console.log(error)
+          res.status(200).json({ status: false, 'message': 'server error' })
+      }
+      console.log(result)
+      res.status(200).json({ status: true, data: result, message: "Record submitted successfully" })
+
+  })
+
+});
 
 module.exports = router;
